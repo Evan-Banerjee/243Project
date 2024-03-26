@@ -8,6 +8,10 @@ typedef struct {
 } ThreeDimensionalPoint;
 
 typedef struct {
+    ThreeDimensionalPoint points[3];
+} Triangle;
+
+typedef struct {
     int xCoordinate;
     int yCoordinate;
 } TwoDimensionalPoint;
