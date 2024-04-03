@@ -12,6 +12,7 @@ typedef struct{
 typedef struct{
 	twoDPoint p1;
 	twoDPoint p2;
+	int c;
 } line;
 
 int main(void)
@@ -35,13 +36,32 @@ int main(void)
     clear_screen(); // pixel_buffer_start points to the pixel buffer
 	
 	line lines[1000];
+	for(int i = 0; i < 1000; i++){
+		twoDPoint p1;
+		p1.xCoordinate = -1;
+		p1.yCoordinate = -1;
+		
+		twoDPoint p2;
+		p2.xCoordinate = -1;
+		p2.yCoordinate = -1;
+		
+		line blankLine;
+		blankLine.p1 = p1;
+		blankLine.p2 = p2;
+		blankLine.c = 0;
+		
+		lines[i] = blankLine; //this makes it so that, while iterating through the lines array, if you reach a line with -1 as a
+							  //coordinate point, then you've reached the end of the array
+	}
+		
 	int lineIndex = 0;
-	add_line(lines, &lineIndex, 10, 10, 100, 100);
+	add_line(lines, &lineIndex, 10, 10, 100, 100, 0xf1);
+	add_line(lines, &lineIndex, 50, 10, 10, 100, 0x3E0);
 
     while (1)
     {
         /* Erase any boxes and lines that were drawn in the last iteration */
-        drawLineFromLineObject(lines[0]);
+        draw_all_lines(lines);
 
         // code for drawing the boxes and lines (not shown)
         // code for updating the locations of boxes (not shown)
@@ -54,7 +74,15 @@ int main(void)
 
 // code for subroutines (not shown)
 
-void add_line(line lines[1000], int* lineIndex, int x1, int y1, int x2, int y2){
+void draw_all_lines(line lines[1000]){
+	int iterator = 0;
+	while(lines[iterator].p1.xCoordinate != -1){
+		draw_line_from_line_object(lines[iterator]);
+		iterator++;
+	}
+}
+
+void add_line(line lines[1000], int* lineIndex, int x1, int y1, int x2, int y2, int colour){
 	twoDPoint testStart;
 	twoDPoint testEnd;
 	
@@ -62,20 +90,22 @@ void add_line(line lines[1000], int* lineIndex, int x1, int y1, int x2, int y2){
 	testStart.yCoordinate = y1;
 	
 	testEnd.xCoordinate = x2;
-	testEnd.yCoordinate = x2;
+	testEnd.yCoordinate = y2;
 	
 	line testLine;
 	
 	testLine.p1 = testStart;
 	testLine.p2 = testEnd;
 	
+	testLine.c = colour;
+	
 	lines[*lineIndex] = testLine;
 	(*lineIndex)++;
 }
 
-void drawLineFromLineObject(line inputLine){
+void draw_line_from_line_object(line inputLine){
 	draw_line(inputLine.p1.xCoordinate, inputLine.p1.yCoordinate, 
-				 inputLine.p2.xCoordinate, inputLine.p2.yCoordinate, 0x1f);
+				 inputLine.p2.xCoordinate, inputLine.p2.yCoordinate, inputLine.c);
 }
 
 void plot_pixel(int x, int y, short int line_color)
