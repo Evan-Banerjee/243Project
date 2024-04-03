@@ -183,15 +183,5 @@ void clear_screen(){
 	return;
 }
 
-void draw_lines_and_boxes(int boxesX[8], int boxesY[8], int colour, int colour2){
-	
-	draw_line(boxesX[7], boxesY[7], boxesX[0], boxesY[0], colour);
-	
-	for(int i = 0; i < 7; i++){
-		draw_line(boxesX[i], boxesY[i], boxesX[i+1], boxesY[i+1], colour);
-	}
-		
-}
-
 
 
