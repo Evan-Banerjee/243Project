@@ -35,27 +35,13 @@ int main(void)
     clear_screen(); // pixel_buffer_start points to the pixel buffer
 	
 	line lines[1000];
-	
-	twoDPoint testStart;
-	twoDPoint testEnd;
-	
-	testStart.xCoordinate = 10;
-	testStart.yCoordinate = 10;
-	
-	testEnd.xCoordinate = 100;
-	testEnd.yCoordinate = 100;
-	
-	line testLine;
-	
-	testLine.p1 = testStart;
-	testLine.p2 = testEnd;
+	int lineIndex = 0;
+	add_line(lines, &lineIndex, 10, 10, 100, 100);
 
     while (1)
     {
         /* Erase any boxes and lines that were drawn in the last iteration */
-		
-        draw_line(testLine.p1.xCoordinate, testLine.p1.yCoordinate, 
-				 testLine.p2.xCoordinate, testLine.p2.yCoordinate, 0x1f);
+        drawLineFromLineObject(lines[0]);
 
         // code for drawing the boxes and lines (not shown)
         // code for updating the locations of boxes (not shown)
@@ -68,7 +54,29 @@ int main(void)
 
 // code for subroutines (not shown)
 
-void add_line();
+void add_line(line lines[1000], int* lineIndex, int x1, int y1, int x2, int y2){
+	twoDPoint testStart;
+	twoDPoint testEnd;
+	
+	testStart.xCoordinate = x1;
+	testStart.yCoordinate = y1;
+	
+	testEnd.xCoordinate = x2;
+	testEnd.yCoordinate = x2;
+	
+	line testLine;
+	
+	testLine.p1 = testStart;
+	testLine.p2 = testEnd;
+	
+	lines[*lineIndex] = testLine;
+	(*lineIndex)++;
+}
+
+void drawLineFromLineObject(line inputLine){
+	draw_line(inputLine.p1.xCoordinate, inputLine.p1.yCoordinate, 
+				 inputLine.p2.xCoordinate, inputLine.p2.yCoordinate, 0x1f);
+}
 
 void plot_pixel(int x, int y, short int line_color)
 {
