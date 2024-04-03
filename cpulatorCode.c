@@ -4,6 +4,16 @@ volatile int pixel_buffer_start; // global variable
 short int Buffer1[240][512]; // 240 rows, 512 (320 + padding) columns
 short int Buffer2[240][512];
 
+typedef struct{
+	int xCoordinate;
+	int yCoordinate;
+} twoDPoint;
+
+typedef struct{
+	twoDPoint p1;
+	twoDPoint p2;
+} line;
+
 int main(void)
 {
     volatile int * pixel_ctrl_ptr = (int *)0xFF203020;
@@ -23,12 +33,29 @@ int main(void)
     *(pixel_ctrl_ptr + 1) = (int) &Buffer2;
     pixel_buffer_start = *(pixel_ctrl_ptr + 1); // we draw on the back buffer
     clear_screen(); // pixel_buffer_start points to the pixel buffer
+	
+	line lines[1000];
+	
+	twoDPoint testStart;
+	twoDPoint testEnd;
+	
+	testStart.xCoordinate = 10;
+	testStart.yCoordinate = 10;
+	
+	testEnd.xCoordinate = 100;
+	testEnd.yCoordinate = 100;
+	
+	line testLine;
+	
+	testLine.p1 = testStart;
+	testLine.p2 = testEnd;
 
     while (1)
     {
         /* Erase any boxes and lines that were drawn in the last iteration */
 		
-        
+        draw_line(testLine.p1.xCoordinate, testLine.p1.yCoordinate, 
+				 testLine.p2.xCoordinate, testLine.p2.yCoordinate, 0x1f);
 
         // code for drawing the boxes and lines (not shown)
         // code for updating the locations of boxes (not shown)
@@ -40,6 +67,8 @@ int main(void)
 }
 
 // code for subroutines (not shown)
+
+void add_line();
 
 void plot_pixel(int x, int y, short int line_color)
 {
@@ -116,12 +145,6 @@ void clear_screen(){
 	return;
 }
 
-void draw_box(int x, int y, int colour){
-	for(int i = 0; i < 3; i++){
-		for(int j = 0; j < 3; j++) plot_pixel(x + i, y + j, colour); 
-	}
-}
-
 void draw_lines_and_boxes(int boxesX[8], int boxesY[8], int colour, int colour2){
 	
 	draw_line(boxesX[7], boxesY[7], boxesX[0], boxesY[0], colour);
@@ -129,8 +152,8 @@ void draw_lines_and_boxes(int boxesX[8], int boxesY[8], int colour, int colour2)
 	for(int i = 0; i < 7; i++){
 		draw_line(boxesX[i], boxesY[i], boxesX[i+1], boxesY[i+1], colour);
 	}
-	
-	for(int i = 0; i < 8; i++) draw_box(boxesX[i], boxesY[i], colour2);
 		
 }
+
+
 
