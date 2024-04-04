@@ -203,4 +203,17 @@ void clear_screen(){
 }
 
 
-
+void copy_triangles(twoDTriangle trianglesBase[1000], twoDTriangle trianglesCopy[1000]){
+	for(int i = 0; i < 1000; i++){
+		
+		if(trianglesCopy[i].p1.xCoordinate == -10000 && trianglesBase[i].p1.xCoordinate == -10000) return;
+		
+		trianglesCopy[i].p1.xCoordinate = trianglesBase[i].p1.xCoordinate;
+		trianglesCopy[i].p2.xCoordinate = trianglesBase[i].p2.xCoordinate;
+		trianglesCopy[i].p3.xCoordinate = trianglesBase[i].p3.xCoordinate;
+		
+		trianglesCopy[i].p1.yCoordinate = trianglesBase[i].p1.yCoordinate;
+		trianglesCopy[i].p2.yCoordinate = trianglesBase[i].p2.yCoordinate;
+		trianglesCopy[i].p3.yCoordinate = trianglesBase[i].p3.yCoordinate;
+	}
+}
