@@ -37,6 +37,7 @@ int main(void)
     clear_screen(); // pixel_buffer_start points to the pixel buffer
 	
 	twoDTriangle triangles[1000];
+	twoDTriangle oldTriangles[1000];
 	for(int i = 0; i < 1000; i++){
 		twoDPoint p1;
 		p1.xCoordinate = -1;
@@ -61,6 +62,9 @@ int main(void)
 	}
 		
 	int triangleIndex = 0;
+	
+	copy_triangles(triangles, oldTriangles);
+	
 	add_triangle(triangles, &triangleIndex, 10, 10, 100, 100, 10, 200, 0xf1);
 	add_triangle(triangles, &triangleIndex, 50, 10, 10, 100, 100, 100, 0x3E0);
 
@@ -75,6 +79,22 @@ int main(void)
         wait_for_vsync(); // swap front and back buffers on VGA vertical sync
 		
         pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
+		
+		draw_all_triangles(oldTriangles); //erase old image
+		
+		copy_triangles(triangles, oldTriangles);
+		
+		int iterator = 0;
+		while(triangles[iterator].p1.xCoordinate != -1){
+			triangles[iterator].p1.xCoordinate++;
+			triangles[iterator].p2.xCoordinate++;
+			triangles[iterator].p3.xCoordinate++;
+			
+			if(triangles[iterator].p1.xCoordinate > 319) triangles[iterator].p1.xCoordinate = 0;
+			if(triangles[iterator].p2.xCoordinate > 319) triangles[iterator].p2.xCoordinate = 0;
+			if(triangles[iterator].p3.xCoordinate > 319) triangles[iterator].p3.xCoordinate = 0;
+			iterator++;
+		}
     }
 }
 
@@ -133,7 +153,7 @@ void plot_pixel(int x, int y, short int line_color)
         
         one_pixel_address = pixel_buffer_start + (y << 10) + (x << 1);
         
-        *one_pixel_address = line_color;
+        if(x < 320 && x >= 0 && y < 240 && y >= 0) *one_pixel_address = line_color;
 }
 
 void draw_line(int startX, int startY, int endX, int endY, int colour){
@@ -215,5 +235,7 @@ void copy_triangles(twoDTriangle trianglesBase[1000], twoDTriangle trianglesCopy
 		trianglesCopy[i].p1.yCoordinate = trianglesBase[i].p1.yCoordinate;
 		trianglesCopy[i].p2.yCoordinate = trianglesBase[i].p2.yCoordinate;
 		trianglesCopy[i].p3.yCoordinate = trianglesBase[i].p3.yCoordinate;
+		
+		trianglesCopy[i].c = 0;
 	}
 }
