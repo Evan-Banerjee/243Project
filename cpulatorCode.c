@@ -118,7 +118,7 @@ int main(void)
 	double fFov = 90;
 	double fFovRad = 1.0f / tan((fFov * 0.5 / 180.0) * 3.14159f);
 
-
+	//start projection matrix code
 	fourByFourMatrix matProj;
 
 	matProj.m[0][0] = fAspectRatio * fFovRad;
@@ -127,6 +127,21 @@ int main(void)
 	matProj.m[3][2] = (-fFar * fNear) / (fFar - fNear);
 	matProj.m[2][3] = 1.0;
 	matProj.m[3][3] = 0.0;
+	//end projection matrix code
+
+	//start rotate matrix code
+	// Rotation Z
+	fourByFourMatrix matRotZ;
+	fourByFourMatrix matRotX;
+
+	
+
+	// Rotation X
+	
+	//end rotate matrix code
+
+
+
 	
 	double cubeArray[12][3][3] = {
 	//SOUTH
@@ -375,4 +390,22 @@ void multiply_matrix(threeDPoint i, threeDPoint o, fourByFourMatrix m){
 	{
 		o.xCoordinate /= w; o.yCoordinate /= w; o.zCoordinate /= w;
 	}
+}
+
+void update_x_rotate_matrix(fourByFourMatrix matRotX, double fTheta){
+	matRotX.m[0][0] = 1;
+	matRotX.m[1][1] = cosf(fTheta * 0.5f);
+	matRotX.m[1][2] = sinf(fTheta * 0.5f);
+	matRotX.m[2][1] = -sinf(fTheta * 0.5f);
+	matRotX.m[2][2] = cosf(fTheta * 0.5f);
+	matRotX.m[3][3] = 1;
+}
+
+void update_z_rotate_matrix(fourByFourMatrix matRotZ, double fTheta){
+	matRotZ.m[0][0] = cosf(fTheta);
+	matRotZ.m[0][1] = sinf(fTheta);
+	matRotZ.m[1][0] = -sinf(fTheta);
+	matRotZ.m[1][1] = cosf(fTheta);
+	matRotZ.m[2][2] = 1;
+	matRotZ.m[3][3] = 1;
 }
