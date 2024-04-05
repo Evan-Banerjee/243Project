@@ -37,6 +37,13 @@ typedef struct{
 int main(void)
 {
     volatile int * pixel_ctrl_ptr = (int *)0xFF203020;
+    volatile int * PS2_ptr = (int *)0xFF200100;
+	volatile int * LED_ptr = (int *)0xFF200000;
+	
+	int PS2_data, RVALID;
+	char byte1 = 0, byte2 = 0, byte3 = 0;
+	
+	*(PS2_ptr) = 0xFF;
     // declare other variables(not shown)
     // initialize location and direction of rectangles(not shown)
 	
@@ -204,16 +211,37 @@ int main(void)
 		// }
 
 		//rotate triangles in 3D
-		for(int i = 0; i < 12; i++){
-			threeDPoint start = threeD_Triangles[i].p1;
-			threeDPoint mid = threeD_Triangles[i].p2;
-			threeDPoint end = threeD_Triangles[i].p3;
+        PS2_data = *(PS2_ptr);
+		RVALID = PS2_data & 0x8000;
+		if (RVALID) {
+			byte1 = byte2;
+			byte2 = byte3;
+			byte3 = PS2_data & 0xFF;
+			
+			if ((byte2 == (char)0xAA) && (byte3 == (char)0x00))
+				*(PS2_ptr) = 0xF4;
+			
+			if((byte2 != (char)0xF0) && byte3 == (char)0x1D){
+				for(int i = 0; i < 12; i++){
+                    threeDPoint start = threeD_Triangles[i].p1;
+                    threeDPoint mid = threeD_Triangles[i].p2;
+                    threeDPoint end = threeD_Triangles[i].p3;
 
-			threeDPoint newStart, newMid, newEnd;
+                    threeDPoint newStart, newMid, newEnd;
 
-			multiply_matrix(start, newStart, matRotX);
-			multiply_matrix(mid, newMid, matRotX);
-			multiply_matrix(end, newEnd, matRotX);
+                    multiply_matrix(start, newStart, matRotX);
+                    multiply_matrix(mid, newMid, matRotX);
+                    multiply_matrix(end, newEnd, matRotX);
+
+                    threeDTriangle newTri;
+                    
+                    newTri.p1 = newStart;
+                    newTri.p2 = newMid;
+                    newTri.p3 = newEnd;
+
+                    threeD_Triangles[i] = newTri;
+		        }
+			}
 		}
     }
 }
