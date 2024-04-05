@@ -154,6 +154,14 @@ int main(void)
     {{1.0, 0.0, 1.0},    {0.0, 0.0, 0.0},    {1.0, 0.0, 0.0}}
 };
 
+	for(int i = 0; i < 12; i++){
+		add_3dTriangle(threeD_Triangles, &threeDTriangleIndex,
+		cubeArray[i][0][0], cubeArray[i][0][1], cubeArray[i][0][2], 
+		cubeArray[i][1][0], cubeArray[i][1][1], cubeArray[i][2][2], 
+		cubeArray[i][2][0], cubeArray[i][2][1], cubeArray[i][3][2], 
+		0x1F);
+	}
+
 
     while (1)
     {
