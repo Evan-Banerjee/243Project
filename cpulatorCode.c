@@ -14,7 +14,7 @@ typedef struct {
     int xCoordinate;
     int yCoordinate;
     int zCoordinate;
-} ThreeDimensionalPoint;
+} threeDPoint;
 
 typedef struct{
 	twoDPoint p1;
@@ -22,6 +22,13 @@ typedef struct{
 	twoDPoint p3;
 	int c;
 } twoDTriangle;
+
+typedef struct{
+	threeDPoint p1;
+	threeDPoint p2;
+	threeDPoint p3;
+	int c;
+} threeDTriangle;
 
 typedef struct{
 	int m[4][4];
@@ -94,6 +101,30 @@ int main(void)
 	matProj.m[3][2] = (-fFar * fNear) / (fFar - fNear);
 	matProj.m[2][3] = 1.0;
 	matProj.m[3][3] = 0.0;
+
+	//SOUTH
+	{ 0.0f, 0.0f, 0.0f,    0.0f, 1.0f, 0.0f,    1.0f, 1.0f, 0.0f },
+	{ 0.0f, 0.0f, 0.0f,    1.0f, 1.0f, 0.0f,    1.0f, 0.0f, 0.0f },
+
+	// EAST                                                      
+	{ 1.0f, 0.0f, 0.0f,    1.0f, 1.0f, 0.0f,    1.0f, 1.0f, 1.0f },
+	{ 1.0f, 0.0f, 0.0f,    1.0f, 1.0f, 1.0f,    1.0f, 0.0f, 1.0f },
+
+	// NORTH                                                     
+	{ 1.0f, 0.0f, 1.0f,    1.0f, 1.0f, 1.0f,    0.0f, 1.0f, 1.0f },
+	{ 1.0f, 0.0f, 1.0f,    0.0f, 1.0f, 1.0f,    0.0f, 0.0f, 1.0f },
+
+	// WEST                                                      
+	{ 0.0f, 0.0f, 1.0f,    0.0f, 1.0f, 1.0f,    0.0f, 1.0f, 0.0f },
+	{ 0.0f, 0.0f, 1.0f,    0.0f, 1.0f, 0.0f,    0.0f, 0.0f, 0.0f },
+
+	// TOP                                                       
+	{ 0.0f, 1.0f, 0.0f,    0.0f, 1.0f, 1.0f,    1.0f, 1.0f, 1.0f },
+	{ 0.0f, 1.0f, 0.0f,    1.0f, 1.0f, 1.0f,    1.0f, 1.0f, 0.0f },
+
+	// BOTTOM                                                    
+	{ 1.0f, 0.0f, 1.0f,    0.0f, 0.0f, 1.0f,    0.0f, 0.0f, 0.0f },
+	{ 1.0f, 0.0f, 1.0f,    0.0f, 0.0f, 0.0f,    1.0f, 0.0f, 0.0f };
 
     while (1)
     {
