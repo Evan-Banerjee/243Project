@@ -105,6 +105,7 @@ int main(void)
 	}
 		
 	int triangleIndex = 0;
+	int threeDTriangleIndex = 0;
 	
 	copy_triangles(triangles, oldTriangles);
 	
@@ -221,7 +222,35 @@ void add_triangle(twoDTriangle triangles[1000], int* triangleIndex, int x1, int 
 	(*triangleIndex)++;
 }
 
-void add_3dTriangle(threeDTriangle t)
+void add_3dTriangle(threeDTriangle threeD_Triangles[1000], int* threeDTriangleIndex,
+ int x1, int y1, int z1, int x2, int y2, int z2, int x3, int y3, int z3, int Colour){
+	threeDPoint triStart;
+	threeDPoint triMid;
+	threeDPoint triEnd;
+
+	triStart.xCoordinate = x1;
+	triStart.yCoordinate = y1;
+	triStart.zCoordinate = z1;
+
+	triMid.xCoordinate = x2;
+	triMid.yCoordinate = y2;
+	triMid.zCoordinate = z2;
+
+	triEnd.xCoordinate = x3;
+	triEnd.yCoordinate = y3;
+	triEnd.zCoordinate = z3;
+
+	threeDTriangle tempTriangle;
+
+	tempTriangle.p1 = triStart;
+	tempTriangle.p2 = triMid;
+	tempTriangle.p3 = triEnd;
+
+	tempTriangle.c = Colour;
+
+	threeD_Triangles[*threeDTriangleIndex] = tempTriangle;
+	(*threeDTriangleIndex)++;
+}
 
 void draw_triangle_from_triangle_object(twoDTriangle inputTriangle){
 	draw_line(inputTriangle.p1.xCoordinate, inputTriangle.p1.yCoordinate, 
