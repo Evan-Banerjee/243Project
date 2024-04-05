@@ -118,7 +118,7 @@ int main(void)
 	double fFov = 90;
 	double fFovRad = 1.0f / tan((fFov * 0.5 / 180.0) * 3.14159f);
 
-	//start projection matrix code
+
 	fourByFourMatrix matProj;
 
 	matProj.m[0][0] = fAspectRatio * fFovRad;
@@ -163,6 +163,8 @@ int main(void)
     {{1.0, 0.0, 1.0},    {0.0, 0.0, 1.0},    {0.0, 0.0, 0.0}},
     {{1.0, 0.0, 1.0},    {0.0, 0.0, 0.0},    {1.0, 0.0, 0.0}}
 };
+
+
 
 	for(int i = 0; i < 12; i++){
 		add_3dTriangle(threeD_Triangles, &threeDTriangleIndex,
@@ -404,3 +406,4 @@ void update_z_rotate_matrix(fourByFourMatrix matRotZ, double fTheta){
 	matRotZ.m[2][2] = 1;
 	matRotZ.m[3][3] = 1;
 }
+
