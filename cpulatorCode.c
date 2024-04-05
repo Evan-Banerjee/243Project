@@ -365,7 +365,7 @@ void copy_triangles(twoDTriangle trianglesBase[1000], twoDTriangle trianglesCopy
 	}
 }
 
-void multiply_matrix(ThreeDimensionalPoint i, ThreeDimensionalPoint o, fourByFourMatrix m){
+void multiply_matrix(threeDPoint i, threeDPoint o, fourByFourMatrix m){
 	o.xCoordinate = i.xCoordinate * m.m[0][0] + i.yCoordinate * m.m[1][0] + i.zCoordinate * m.m[2][0] + m.m[3][0];
 	o.yCoordinate = i.xCoordinate * m.m[0][1] + i.yCoordinate * m.m[1][1] + i.zCoordinate * m.m[2][1] + m.m[3][1];
 	o.zCoordinate = i.xCoordinate * m.m[0][2] + i.yCoordinate * m.m[1][2] + i.zCoordinate * m.m[2][2] + m.m[3][2];
