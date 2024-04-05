@@ -169,8 +169,8 @@ int main(void)
 	for(int i = 0; i < 12; i++){
 		add_3dTriangle(threeD_Triangles, &threeDTriangleIndex,
 		cubeArray[i][0][0], cubeArray[i][0][1], cubeArray[i][0][2], 
-		cubeArray[i][1][0], cubeArray[i][1][1], cubeArray[i][1][2], 
-		cubeArray[i][2][0], cubeArray[i][2][1], cubeArray[i][2][2], 
+		cubeArray[i][1][0], cubeArray[i][1][1], cubeArray[i][2][2], 
+		cubeArray[i][2][0], cubeArray[i][2][1], cubeArray[i][3][2], 
 		0x1F);
 	}
 
@@ -192,28 +192,15 @@ int main(void)
 		copy_triangles(triangles, oldTriangles);
 		
 		int iterator = 0;
-		// while(triangles[iterator].p1.xCoordinate != -1){
-		// 	triangles[iterator].p1.xCoordinate++;
-		// 	triangles[iterator].p2.xCoordinate++;
-		// 	triangles[iterator].p3.xCoordinate++;
+		while(triangles[iterator].p1.xCoordinate != -1){
+			triangles[iterator].p1.xCoordinate++;
+			triangles[iterator].p2.xCoordinate++;
+			triangles[iterator].p3.xCoordinate++;
 			
-		// 	if(triangles[iterator].p1.xCoordinate > 319) triangles[iterator].p1.xCoordinate = 0;
-		// 	if(triangles[iterator].p2.xCoordinate > 319) triangles[iterator].p2.xCoordinate = 0;
-		// 	if(triangles[iterator].p3.xCoordinate > 319) triangles[iterator].p3.xCoordinate = 0;
-		// 	iterator++; //test
-		// }
-
-		//rotate triangles in 3D
-		for(int i = 0; i < 12; i++){
-			threeDPoint start = threeD_Triangles[i].p1;
-			threeDPoint mid = threeD_Triangles[i].p2;
-			threeDPoint end = threeD_Triangles[i].p3;
-
-			threeDPoint newStart, newMid, newEnd;
-
-			multiply_matrix(start, newStart, matRotX);
-			multiply_matrix(mid, newMid, matRotX);
-			multiply_matrix(end, newEnd, matRotX);
+			if(triangles[iterator].p1.xCoordinate > 319) triangles[iterator].p1.xCoordinate = 0;
+			if(triangles[iterator].p2.xCoordinate > 319) triangles[iterator].p2.xCoordinate = 0;
+			if(triangles[iterator].p3.xCoordinate > 319) triangles[iterator].p3.xCoordinate = 0;
+			iterator++; //test
 		}
     }
 }
@@ -420,3 +407,19 @@ void update_z_rotate_matrix(fourByFourMatrix matRotZ, double fTheta){
 	matRotZ.m[3][3] = 1;
 }
 
+twoDPoint proj_ThreeToTwoPoint(fourByFourMatrix projMatrix, threeDPoint projPoint) {
+	threeDPoint fourDProjectedPoint;
+	twoDPoint twoDProjectedPoint;
+	multiply_matrix(projPoint, fourDProjectedPoint, projMatrix);
+	twoDProjectedPoint.xCoordinate = fourDProjectedPoint.xCoordinate;
+	twoDProjectedPoint.yCoordinate = fourDProjectedPoint.yCoordinate;
+	return twoDProjectedPoint;
+}
+
+twoDTriangle proj_ThreeToTwoTriangle(foruByFourMatrix projMatrix, threeDTriangle projTriangle) {
+	twoDTriangle twoDProjectedTriangle;
+	twoDProjectedTriangle.p1 = proj_ThreeToTwoPoint(projMatrix, projTriangle.p1);
+	twoDProjectedTriangle.p2 = proj_ThreeToTwoPoint(projMatrix, projTriangle.p2);
+	twoDProjectedTriangle.p3 = proj_ThreeToTwoPoint(projMatrix, projTriangle.p3);
+	return twoDProjectedTriangle;
+}
