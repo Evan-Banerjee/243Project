@@ -56,6 +56,7 @@ int main(void)
 	
 	twoDTriangle triangles[1000];
 	twoDTriangle oldTriangles[1000];
+	threeDTriangle threeD_Triangles[1000];
 	for(int i = 0; i < 1000; i++){
 		twoDPoint p1;
 		p1.xCoordinate = -1;
@@ -77,6 +78,30 @@ int main(void)
 		
 		triangles[i] = blankTriangle; //this makes it so that, while iterating through the lines array, if you reach a triangle 
 							  //with -1 as a coordinate point, then you've reached the end of the array
+	}
+	for (int i = 0; i<1000; i++) {
+		threeDPoint p1;
+		p1.xCoordinate = -1;
+		p1.yCoordinate = -1;
+		p1.zCoordinate = -1;
+
+		threeDPoint p2;
+		p2.xCoordinate = -1;
+		p2.yCoordinate = -1;
+		p2.zCoordinate = -1;
+
+		threeDPoint p3;
+		p3.xCoordinate = -1;
+		p3.yCoordinate = -1;
+		p3.zCoordinate = -1;
+
+		threeDTriangle blank_3D;
+		blank_3D.p1 = p1;
+		blank_3D.p2 = p2;
+		blank_3D.p3 = p3;
+		blank_3D.c = 0;
+
+		threeD_Triangles[i] = blank_3D;
 	}
 		
 	int triangleIndex = 0;
@@ -151,7 +176,7 @@ int main(void)
 			if(triangles[iterator].p1.xCoordinate > 319) triangles[iterator].p1.xCoordinate = 0;
 			if(triangles[iterator].p2.xCoordinate > 319) triangles[iterator].p2.xCoordinate = 0;
 			if(triangles[iterator].p3.xCoordinate > 319) triangles[iterator].p3.xCoordinate = 0;
-			iterator++;
+			iterator++; //test
 		}
     }
 }
@@ -192,6 +217,8 @@ void add_triangle(twoDTriangle triangles[1000], int* triangleIndex, int x1, int 
 	triangles[*triangleIndex] = tempTriangle;
 	(*triangleIndex)++;
 }
+
+void add_3dTriangle(threeDTriangle t)
 
 void draw_triangle_from_triangle_object(twoDTriangle inputTriangle){
 	draw_line(inputTriangle.p1.xCoordinate, inputTriangle.p1.yCoordinate, 
