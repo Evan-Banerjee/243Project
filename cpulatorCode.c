@@ -6,14 +6,14 @@ short int Buffer1[240][512]; // 240 rows, 512 (320 + padding) columns
 short int Buffer2[240][512];
 
 typedef struct{
-	int xCoordinate;
-	int yCoordinate;
+	double xCoordinate;
+	double yCoordinate;
 } twoDPoint;
 
 typedef struct {
-    int xCoordinate;
-    int yCoordinate;
-    int zCoordinate;
+    double xCoordinate;
+    double yCoordinate;
+    double zCoordinate;
 } threeDPoint;
 
 typedef struct{
@@ -189,12 +189,11 @@ int main(void)
 	add_3dTriangle(threeD_Triangles, &threeDTriangleIndex, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0x1F);
 	twoDTriangle testTri = proj_ThreeToTwoTriangle(matProj, threeD_Triangles[0]);
 
-	double point1X = testTri.p1.xCoordinate;
-	double point2Y = testTri.p1.yCoordinate;
+	double point1X = testTri.p2.xCoordinate;
+	double point1Y = testTri.p2.yCoordinate;
 	
-
-	triangles[0] = testTri;
-	//add_triangle(triangles, &triangleIndex, 0, 0, 100, 0, 0, 100, 0x1F);
+	*(LED_ptr) = point1X && 0x3FF;
+	add_triangle(triangles, &triangleIndex, 10, 10, 100, 0, point1X, point1Y, 0x1F);
 
 
     while (1)
@@ -484,5 +483,6 @@ twoDTriangle proj_ThreeToTwoTriangle(fourByFourMatrix projMatrix, threeDTriangle
 	twoDProjectedTriangle.p2 = proj_ThreeToTwoPoint(projMatrix, projTriangle.p2);
 	twoDProjectedTriangle.p3 = proj_ThreeToTwoPoint(projMatrix, projTriangle.p3);
 	twoDProjectedTriangle.c = 0x1F;
+
 	return twoDProjectedTriangle;
 }
