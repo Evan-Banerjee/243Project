@@ -117,9 +117,6 @@ int main(void)
 	int threeDTriangleIndex = 0;
 	
 	copy_triangles(triangles, oldTriangles);
-	
-	add_triangle(triangles, &triangleIndex, 10, 10, 100, 100, 10, 200, 0xf1);
-	add_triangle(triangles, &triangleIndex, 50, 10, 10, 100, 100, 100, 0x3E0);
 
 	double fNear = 0.1;
 	double fFar = 1000.0;
@@ -177,13 +174,27 @@ int main(void)
 
 
 
-	for(int i = 0; i < 12; i++){
+	/*for(int i = 0; i < 12; i++){
 		add_3dTriangle(threeD_Triangles, &threeDTriangleIndex,
 		cubeArray[i][0][0], cubeArray[i][0][1], cubeArray[i][0][2], 
 		cubeArray[i][1][0], cubeArray[i][1][1], cubeArray[i][2][2], 
 		cubeArray[i][2][0], cubeArray[i][2][1], cubeArray[i][3][2], 
 		0x1F);
-	}
+
+		threeD_Triangles[i].p1.zCoordinate += 3;
+		threeD_Triangles[i].p2.zCoordinate += 3;
+		threeD_Triangles[i].p3.zCoordinate += 3;
+	}*/
+
+	add_3dTriangle(threeD_Triangles, &threeDTriangleIndex, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0x1F);
+	twoDTriangle testTri = proj_ThreeToTwoTriangle(matProj, threeD_Triangles[0]);
+
+	double point1X = testTri.p1.xCoordinate;
+	double point2Y = testTri.p1.yCoordinate;
+	
+
+	triangles[0] = testTri;
+	//add_triangle(triangles, &triangleIndex, 0, 0, 100, 0, 0, 100, 0x1F);
 
 
     while (1)
@@ -198,7 +209,7 @@ int main(void)
 		
         pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
 		
-		draw_all_triangles(oldTriangles); //erase old image
+		//draw_all_triangles(oldTriangles); //erase old image
 		
 		copy_triangles(triangles, oldTriangles);
 		
@@ -243,15 +254,16 @@ int main(void)
                     newTri.p3 = newEnd;
 
                     threeD_Triangles[i] = newTri;
+
+					fTheta++;
+					update_x_rotate_matrix(matRotX, fTheta);
 		        }
 			}
 		}
-		fTheta++;
-		update_x_rotate_matrix(matRotX, fTheta);
 
-		for(int i = 0; i < 12; i++){
+		/*for(int i = 0; i < 12; i++){
 			triangles[i] = proj_ThreeToTwoTriangle(matProj, threeD_Triangles[i]);
-		}
+		}*/
     }
 }
 
@@ -471,5 +483,6 @@ twoDTriangle proj_ThreeToTwoTriangle(fourByFourMatrix projMatrix, threeDTriangle
 	twoDProjectedTriangle.p1 = proj_ThreeToTwoPoint(projMatrix, projTriangle.p1);
 	twoDProjectedTriangle.p2 = proj_ThreeToTwoPoint(projMatrix, projTriangle.p2);
 	twoDProjectedTriangle.p3 = proj_ThreeToTwoPoint(projMatrix, projTriangle.p3);
+	twoDProjectedTriangle.c = 0x1F;
 	return twoDProjectedTriangle;
 }
