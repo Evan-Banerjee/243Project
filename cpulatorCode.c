@@ -131,16 +131,11 @@ int main(void)
 
 	//start rotate matrix code
 	// Rotation Z
-	fourByFourMatrix matRotZ;
 	fourByFourMatrix matRotX;
+	fourByFourMatrix matRotZ;
 
-	
-
-	// Rotation X
-	
-	//end rotate matrix code
-
-
+	update_x_rotate_matrix(matRotX, 0);
+	update_z_rotate_matrix(matRotZ, 0);
 
 	
 	double cubeArray[12][3][3] = {
