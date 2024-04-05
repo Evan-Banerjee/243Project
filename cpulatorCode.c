@@ -34,9 +34,18 @@ typedef struct{
 	int m[4][4];
 } fourByFourMatrix;
 
+twoDTriangle proj_ThreeToTwoTriangle(fourByFourMatrix projMatrix, threeDTriangle projTriangle);
+
 int main(void)
 {
     volatile int * pixel_ctrl_ptr = (int *)0xFF203020;
+    volatile int * PS2_ptr = (int *)0xFF200100;
+	volatile int * LED_ptr = (int *)0xFF200000;
+	
+	int PS2_data, RVALID;
+	char byte1 = 0, byte2 = 0, byte3 = 0;
+	
+	*(PS2_ptr) = 0xFF;
     // declare other variables(not shown)
     // initialize location and direction of rectangles(not shown)
 	
@@ -137,6 +146,8 @@ int main(void)
 	update_x_rotate_matrix(matRotX, 0);
 	update_z_rotate_matrix(matRotZ, 0);
 
+	int fTheta = 0;
+
 	
 	double cubeArray[12][3][3] = {
 	//SOUTH
@@ -192,7 +203,7 @@ int main(void)
 		copy_triangles(triangles, oldTriangles);
 		
 		int iterator = 0;
-		while(triangles[iterator].p1.xCoordinate != -1){
+		/*while(triangles[iterator].p1.xCoordinate != -1){
 			triangles[iterator].p1.xCoordinate++;
 			triangles[iterator].p2.xCoordinate++;
 			triangles[iterator].p3.xCoordinate++;
@@ -201,6 +212,45 @@ int main(void)
 			if(triangles[iterator].p2.xCoordinate > 319) triangles[iterator].p2.xCoordinate = 0;
 			if(triangles[iterator].p3.xCoordinate > 319) triangles[iterator].p3.xCoordinate = 0;
 			iterator++; //test
+		}*/
+
+		PS2_data = *(PS2_ptr);
+		RVALID = PS2_data & 0x8000;
+		if (RVALID) {
+			byte1 = byte2;
+			byte2 = byte3;
+			byte3 = PS2_data & 0xFF;
+			
+			if ((byte2 == (char)0xAA) && (byte3 == (char)0x00))
+				*(PS2_ptr) = 0xF4;
+			
+			if((byte2 != (char)0xF0) && byte3 == (char)0x1D){
+				for(int i = 0; i < 12; i++){
+                    threeDPoint start = threeD_Triangles[i].p1;
+                    threeDPoint mid = threeD_Triangles[i].p2;
+                    threeDPoint end = threeD_Triangles[i].p3;
+
+                    threeDPoint newStart, newMid, newEnd;
+
+                    multiply_matrix(start, newStart, matRotX);
+                    multiply_matrix(mid, newMid, matRotX);
+                    multiply_matrix(end, newEnd, matRotX);
+
+                    threeDTriangle newTri;
+                    
+                    newTri.p1 = newStart;
+                    newTri.p2 = newMid;
+                    newTri.p3 = newEnd;
+
+                    threeD_Triangles[i] = newTri;
+		        }
+			}
+		}
+		fTheta++;
+		update_x_rotate_matrix(matRotX, fTheta);
+
+		for(int i = 0; i < 12; i++){
+			triangles[i] = proj_ThreeToTwoTriangle(matProj, threeD_Triangles[i]);
 		}
     }
 }
