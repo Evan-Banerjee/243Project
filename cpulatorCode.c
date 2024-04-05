@@ -416,7 +416,7 @@ twoDPoint proj_ThreeToTwoPoint(fourByFourMatrix projMatrix, threeDPoint projPoin
 	return twoDProjectedPoint;
 }
 
-twoDTriangle proj_ThreeToTwoTriangle(foruByFourMatrix projMatrix, threeDTriangle projTriangle) {
+twoDTriangle proj_ThreeToTwoTriangle(fourByFourMatrix projMatrix, threeDTriangle projTriangle) {
 	twoDTriangle twoDProjectedTriangle;
 	twoDProjectedTriangle.p1 = proj_ThreeToTwoPoint(projMatrix, projTriangle.p1);
 	twoDProjectedTriangle.p2 = proj_ThreeToTwoPoint(projMatrix, projTriangle.p2);
