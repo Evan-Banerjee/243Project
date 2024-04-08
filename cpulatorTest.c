@@ -71,7 +71,6 @@ int main(void)
 	twoDTriangle triangles[1000];
 	twoDTriangle oldTriangles[1000];
 	threeDTriangle threeD_Triangles[1000];
-	threeDTriangle rotatedTriangles[1000];
 	for(int i = 0; i < 1000; i++){
 		twoDPoint p1;
 		p1.xCoordinate = -1;
@@ -160,10 +159,10 @@ int main(void)
 	fourByFourMatrix matRotX;
 	fourByFourMatrix matRotZ;
 
-	update_x_rotate_matrix(&matRotX, 0);
+	update_x_rotate_matrix(&matRotX, 0.1);
 	update_z_rotate_matrix(matRotZ, 0);
 
-	double fTheta = 0.0;
+	int fTheta = 0;
 
 	
 	double cubeArray[12][3][3] = {
@@ -227,8 +226,8 @@ int main(void)
 	//printThreeDTriangle(threeD_Triangles[0]);
 
 	//printf("\ntesting out projecting the triangle\n");
-	twoDTriangle testProj = proj_ThreeToTwoTriangle(matProj, threeD_Triangles[0]);
-	printTwoDTriangle(testProj);
+	// twoDTriangle testProj = proj_ThreeToTwoTriangle(matProj, threeD_Triangles[0]);
+	// printTwoDTriangle(testProj);
 
 	// //printf("\napplying matrix transform to point 1\n");
 	// //printf("before projecting point:\n");
@@ -252,90 +251,13 @@ int main(void)
 	// twoDTriangle projTri = proj_ThreeToTwoTriangle(matProj, threeD_Triangles[0]);
 	// printTwoDTriangle(projTri);
 
+    printf("first printing first triangle");
+    printThreeDTriangle(threeD_Triangles[0]);
 
-    while (1)
-    {
-        /* Erase any boxes and lines that were drawn in the last iteration */
-		printf("restarting loop\n");
-		printf("triangle 0 coordinates:");
-		printTwoDTriangle(triangles[0]);
-        draw_all_triangles(triangles);
-		//draw_triangle_from_triangle_object(testProj);
-
-        // code for drawing the boxes and lines (not shown)
-        // code for updating the locations of boxes (not shown)
-
-        wait_for_vsync(); // swap front and back buffers on VGA vertical sync
-		
-        pixel_buffer_start = *(pixel_ctrl_ptr + 1); // new back buffer
-		
-		draw_all_triangles(oldTriangles); //erase old image
-		
-		copy_triangles(triangles, oldTriangles);
-		
-		int iterator = 0;
-		// while(triangles[iterator].p1.xCoordinate != -1){
-		// 	triangles[iterator].p1.xCoordinate++;
-		// 	triangles[iterator].p2.xCoordinate++;
-		// 	triangles[iterator].p3.xCoordinate++;
-			
-		// 	if(triangles[iterator].p1.xCoordinate > 319) triangles[iterator].p1.xCoordinate = 0;
-		// 	if(triangles[iterator].p2.xCoordinate > 319) triangles[iterator].p2.xCoordinate = 0;
-		// 	if(triangles[iterator].p3.xCoordinate > 319) triangles[iterator].p3.xCoordinate = 0;
-		// 	iterator++; //test
-		// }
-
-		PS2_data = *(PS2_ptr);
-		RVALID = PS2_data & 0x8000;
-		if (RVALID) {
-			byte1 = byte2;
-			byte2 = byte3;
-			byte3 = PS2_data & 0xFF;
-			
-			if ((byte2 == (char)0xAA) && (byte3 == (char)0x00))
-				*(PS2_ptr) = 0xF4;
-			
-			if((byte2 != (char)0xF0) && byte3 == (char)0x1D){
-				printf("w key is pressed\n");
-				for(int i = 0; i < 12; i++){
-                    threeDPoint start = threeD_Triangles[i].p1;
-                    threeDPoint mid = threeD_Triangles[i].p2;
-                    threeDPoint end = threeD_Triangles[i].p3;
-
-                    threeDPoint newStart, newMid, newEnd;
-
-                    multiply_matrix(start, &newStart, matRotX);
-                    multiply_matrix(mid, &newMid, matRotX);
-                    multiply_matrix(end, &newEnd, matRotX);
-
-                    threeDTriangle newTri;
-                    
-                    newTri.p1 = newStart;
-                    newTri.p2 = newMid;
-                    newTri.p3 = newEnd;
-
-					printf("old tri p1 = (%f, %f, %f), new tri p1 = (%f, %f, %f)\n", 
-					start.xCoordinate, start.yCoordinate, start.zCoordinate, newStart.xCoordinate, newStart.yCoordinate, newStart.zCoordinate);
-
-                    threeD_Triangles[i] = newTri;
-
-					fTheta += 0.01;
-					update_x_rotate_matrix(&matRotX, fTheta);
-		        }
-			}
-		}
-
-		for(int i = 0; i < 12; i++){
-			//printf("doing a rotation. value of theta is %f\n", fTheta);
-			rotatedTriangles[i] = rotate_triangle(threeD_Triangles[i], matRotX);
-		}
-		fTheta += 0.1;
-		update_x_rotate_matrix(&matRotX, fTheta);
-
-		for(int i = 0; i < 12; i++){
-			triangles[i] = proj_ThreeToTwoTriangle(matProj, rotatedTriangles[i]);
-		}
-    }
+    threeDTriangle newTri; 
+    newTri = rotate_triangle(threeD_Triangles[0], matRotX);
+    printf("now printing rotated triangle (should cause a small change because theta = 0.1)\n");
+    printThreeDTriangle(newTri);
 }
 
 // code for subroutines (not shown)
