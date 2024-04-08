@@ -37,6 +37,22 @@ typedef struct{
 twoDTriangle proj_ThreeToTwoTriangle(fourByFourMatrix projMatrix, threeDTriangle projTriangle);
 twoDPoint proj_ThreeToTwoPoint(fourByFourMatrix projMatrix, threeDPoint projPoint);
 threeDTriangle rotate_triangle(threeDTriangle inputTri, fourByFourMatrix matRot);
+void draw_all_triangles(twoDTriangle triangles[1000]);
+void add_triangle(twoDTriangle triangles[1000], int* triangleIndex, double x1, double y1, 
+				  double x2, double y2, double x3, double y3, int colour);
+void add_3dTriangle(threeDTriangle threeD_Triangles[1000], int* threeDTriangleIndex,
+ double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, double Colour);
+void draw_triangle_from_triangle_object(twoDTriangle inputTriangle);
+void plot_pixel(int x, int y, short int line_color);
+void draw_line(int startX, int startY, int endX, int endY, int colour);
+void swap(int* a, int* b);
+void wait_for_vsync();
+void clear_screen();
+void copy_triangles(twoDTriangle trianglesBase[1000], twoDTriangle trianglesCopy[1000]);
+void multiply_matrix(threeDPoint i, threeDPoint *o, fourByFourMatrix m);
+void update_x_rotate_matrix(fourByFourMatrix *matRotX, double fTheta);
+void update_z_rotate_matrix(fourByFourMatrix *matRotZ, double fTheta);
+threeDTriangle rotate_triangle(threeDTriangle inputTri, fourByFourMatrix matRot);
 
 double screenWidth = 320;
 double screenHeight = 240;
