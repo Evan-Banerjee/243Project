@@ -46,6 +46,8 @@ int main(void)
     volatile int * pixel_ctrl_ptr = (int *)0xFF203020;
     volatile int * PS2_ptr = (int *)0xFF200100;
 	volatile int * LED_ptr = (int *)0xFF200000;
+	volatile int * SLIDER = (int*)0xFF200040;
+	volatile int * BUTTONS = (int*)0xFF200050;
 	
 	int PS2_data, RVALID;
 	char byte1 = 0, byte2 = 0, byte3 = 0;
@@ -161,7 +163,7 @@ int main(void)
 	fourByFourMatrix matRotZ;
 
 	update_x_rotate_matrix(&matRotX, 0);
-	update_z_rotate_matrix(matRotZ, 0);
+	update_z_rotate_matrix(&matRotZ, 0);
 
 	double fTheta = 0.0;
 
@@ -252,6 +254,12 @@ int main(void)
 	// twoDTriangle projTri = proj_ThreeToTwoTriangle(matProj, threeD_Triangles[0]);
 	// printTwoDTriangle(projTri);
 
+	for(int i = 0; i < 12; i++){
+		//printf("doing a rotation. value of theta is %f\n", fTheta);
+		rotatedTriangles[i] = rotate_triangle(threeD_Triangles[i], matRotX);
+	}
+
+	double fThetaZ = 0.0;
 
     while (1)
     {
@@ -297,40 +305,39 @@ int main(void)
 			
 			if((byte2 != (char)0xF0) && byte3 == (char)0x1D){
 				printf("w key is pressed\n");
-				for(int i = 0; i < 12; i++){
-                    threeDPoint start = threeD_Triangles[i].p1;
-                    threeDPoint mid = threeD_Triangles[i].p2;
-                    threeDPoint end = threeD_Triangles[i].p3;
-
-                    threeDPoint newStart, newMid, newEnd;
-
-                    multiply_matrix(start, &newStart, matRotX);
-                    multiply_matrix(mid, &newMid, matRotX);
-                    multiply_matrix(end, &newEnd, matRotX);
-
-                    threeDTriangle newTri;
-                    
-                    newTri.p1 = newStart;
-                    newTri.p2 = newMid;
-                    newTri.p3 = newEnd;
-
-					printf("old tri p1 = (%f, %f, %f), new tri p1 = (%f, %f, %f)\n", 
-					start.xCoordinate, start.yCoordinate, start.zCoordinate, newStart.xCoordinate, newStart.yCoordinate, newStart.zCoordinate);
-
-                    threeD_Triangles[i] = newTri;
-
-					fTheta += 0.01;
-					update_x_rotate_matrix(&matRotX, fTheta);
-		        }
+				fTheta += 0.1;
+				update_x_rotate_matrix(&matRotX, fTheta);
 			}
+
+			if((byte2 != (char)0xF0) && byte3 == (char)0x1B){
+				printf("s key is pressed\n");
+				fThetaZ += 0.1;
+				update_z_rotate_matrix(&matRotZ, fThetaZ);
+			}
+		}
+		if((*(SLIDER) & 0Xf) != 0){
+			printf("switch 1 is pressed\n");
+			fTheta += 0.1;
+			update_x_rotate_matrix(&matRotX, fTheta);
+		}
+		if((*(BUTTONS) & 0Xf) != 0){
+			printf("switch 2 is pressed\n");
+			fThetaZ += 0.1;
+			update_z_rotate_matrix(&matRotZ, fThetaZ);
 		}
 
 		for(int i = 0; i < 12; i++){
 			//printf("doing a rotation. value of theta is %f\n", fTheta);
 			rotatedTriangles[i] = rotate_triangle(threeD_Triangles[i], matRotX);
+			rotatedTriangles[i] = rotate_triangle(rotatedTriangles[i], matRotZ);
 		}
-		fTheta += 0.1;
-		update_x_rotate_matrix(&matRotX, fTheta);
+
+		// for(int i = 0; i < 12; i++){
+		// 	//printf("doing a rotation. value of theta is %f\n", fTheta);
+		// 	rotatedTriangles[i] = rotate_triangle(threeD_Triangles[i], matRotX);
+		// }
+		// fTheta += 0.1;
+		// update_x_rotate_matrix(&matRotX, fTheta);
 
 		for(int i = 0; i < 12; i++){
 			triangles[i] = proj_ThreeToTwoTriangle(matProj, rotatedTriangles[i]);
@@ -546,13 +553,13 @@ void update_x_rotate_matrix(fourByFourMatrix *matRotX, double fTheta){
 	matRotX->m[3][3] = 1;
 }
 
-void update_z_rotate_matrix(fourByFourMatrix matRotZ, double fTheta){
-	matRotZ.m[0][0] = cosf(fTheta);
-	matRotZ.m[0][1] = sinf(fTheta);
-	matRotZ.m[1][0] = -sinf(fTheta);
-	matRotZ.m[1][1] = cosf(fTheta);
-	matRotZ.m[2][2] = 1;
-	matRotZ.m[3][3] = 1;
+void update_z_rotate_matrix(fourByFourMatrix *matRotZ, double fTheta){
+	matRotZ->m[0][0] = cosf(fTheta);
+	matRotZ->m[0][1] = sinf(fTheta);
+	matRotZ->m[1][0] = -sinf(fTheta);
+	matRotZ->m[1][1] = cosf(fTheta);
+	matRotZ->m[2][2] = 1;
+	matRotZ->m[3][3] = 1;
 }
 
 twoDPoint proj_ThreeToTwoPoint(fourByFourMatrix projMatrix, threeDPoint projPoint) {
